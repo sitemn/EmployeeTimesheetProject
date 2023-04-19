@@ -11,7 +11,9 @@ import com.site.employeetimesheetproject.payload.MessageResponse;
 import com.site.employeetimesheetproject.payload.SignupRequest;
 import com.site.employeetimesheetproject.repository.RoleRepository;
 import com.site.employeetimesheetproject.repository.EmployeeRepository;
+import com.site.employeetimesheetproject.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,6 +55,9 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateEmployee(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -88,44 +93,46 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        // Create new Employee's account
-        Employee employee = new Employee(signUpRequest.getEmployeeName(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+//        // Create new Employee's account
+//        Employee employee = new Employee(signUpRequest.getEmployeeName(),
+//                signUpRequest.getEmail(),
+//                encoder.encode(signUpRequest.getPassword()));
+//
+//        Set<String> strRoles = signUpRequest.getRoles();
+//        Set<Role> roles = new HashSet<>();
+//
+//        if (strRoles == null) {
+//            Role employeeRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE)
+//                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//            roles.add(employeeRole);
+//        } else {
+//            strRoles.forEach(role -> {
+//                switch (role) {
+//                    case "admin":
+//                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+//                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//                        roles.add(adminRole);
+//
+//                        break;
+//                    case "mod":
+//                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+//                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//                        roles.add(modRole);
+//
+//                        break;
+//                    default:
+//                        Role employeeRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE)
+//                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+//                        roles.add(employeeRole);
+//                }
+//            });
+//        }
+//
+//        employee.setRoles(roles);
+//        employeeRepository.save(employee);
 
-        Set<String> strRoles = signUpRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role employeeRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(employeeRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "mod":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-
-                        break;
-                    default:
-                        Role employeeRole = roleRepository.findByName(ERole.ROLE_EMPLOYEE)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(employeeRole);
-                }
-            });
-        }
-
-        employee.setRoles(roles);
-        employeeRepository.save(employee);
-
-        return ResponseEntity.ok(new MessageResponse("Employee registered successfully!"));
+        Employee createdEmployee = employeeService.createEmployee(signUpRequest);
+        return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
+        //return ResponseEntity.ok(new MessageResponse("Employee registered successfully!"));
     }
 }

@@ -30,7 +30,6 @@ public class TestController {
     }
 
     @GetMapping("/mod")
-    @PreAuthorize("hasRole('MODERATOR')")
     public String moderatorAccess() {
         return "Moderator Board.";
     }
