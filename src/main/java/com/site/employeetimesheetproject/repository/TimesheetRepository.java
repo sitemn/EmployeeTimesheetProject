@@ -1,8 +1,6 @@
 package com.site.employeetimesheetproject.repository;
 
 
-import com.site.employeetimesheetproject.model.Employee;
-import com.site.employeetimesheetproject.model.Project;
 import com.site.employeetimesheetproject.model.Timesheet;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -24,7 +22,7 @@ public interface TimesheetRepository extends MongoRepository<Timesheet, String> 
     @Query("{ 'employee._id' : ?0, 'timeEntries.date': { '$gte': ?1, '$lte': ?2 } }")
     List<Timesheet> findByEmployeeIdAndDateRange(String employeeId, LocalDate startDate, LocalDate endDate);
 
-    @Query("{ 'project._id' : ?0, 'timeEntries.$date': { '$gte': ?1, '$lte': ?2 } }")
+    @Query("{ 'project._id' : ?0, 'timeEntries.date': { '$gte': ?1, '$lte': ?2 } }")
     List<Timesheet> findByProjectIdAndDateRange(String projectId, LocalDate startDate, LocalDate endDate);
 
     List<Timesheet> findByEmployeeId(String employeeId);

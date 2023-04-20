@@ -10,6 +10,7 @@ import com.site.employeetimesheetproject.payload.SignupRequest;
 import com.site.employeetimesheetproject.repository.EmployeeRepository;
 import com.site.employeetimesheetproject.repository.RoleRepository;
 import com.site.employeetimesheetproject.service.EmployeeService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,9 @@ public class AuthController {
     @Autowired
     private EmployeeService employeeService;
 
+    @ApiOperation(value = "This endpoint handles emplpoyee sign-in requests",
+    notes = "If authentication is successful, " +
+            "a JWT is generated and returned in a JwtResponse object along with the employee's details and roles.")
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateEmployee(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -67,6 +71,8 @@ public class AuthController {
                 roles));
     }
 
+    @ApiOperation(value = "This endpoint handles employee sign-up requests",
+                    notes = "roles: [employee, mod, admin]")
     @PostMapping("/signup")
     public ResponseEntity<?> registerEmployee(@Valid @RequestBody SignupRequest signUpRequest) {
         if (employeeRepository.existsByEmployeeName(signUpRequest.getEmployeeName())) {

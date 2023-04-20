@@ -8,6 +8,7 @@ import com.site.employeetimesheetproject.payload.SignupRequest;
 import com.site.employeetimesheetproject.repository.EmployeeRepository;
 import com.site.employeetimesheetproject.service.EmployeeService;
 import com.site.employeetimesheetproject.service.ProjectService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,8 @@ public class EmployeeController {
     @Autowired
     private ProjectService projectService;
 
+    @ApiOperation(value = "This endpoint handles POST requests to create a new employee",
+            notes = "It requires the user to have an ADMIN role to access it. ")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createEmployee(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -57,6 +60,8 @@ public class EmployeeController {
         return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "This endpoint handles PUT requests to update an existing employee with the given id",
+            notes = "The user must either have an ADMIN role or be the owner of the employee record to access this endpoint. ")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee updatedEmployee) {
@@ -79,6 +84,8 @@ public class EmployeeController {
 //        }
 //    }
 
+    @ApiOperation(value = "This endpoint handles DELETE requests to delete an existing employee with the given id.",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEmployee(@PathVariable String id) {
@@ -90,6 +97,8 @@ public class EmployeeController {
         }
     }
 
+    @ApiOperation(value = "This endpoint handles GET request to retrieve all existing employees.",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
@@ -105,6 +114,8 @@ public class EmployeeController {
 //                .collect(Collectors.toList());
 //        return new ResponseEntity<>(employeeDTOs, HttpStatus.OK);
 //    }
+    @ApiOperation(value = "This endpoint handles GET requests to get an employee with the given id. ",
+            notes = "The user must either have an ADMIN role or be the owner of the employee record to access this endpoint. ")
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable String id) {
@@ -123,6 +134,8 @@ public class EmployeeController {
 //                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 //    }
 
+    @ApiOperation(value = "This endpoint handles GET requests to get a list of projects associated with an employee with the given id.",
+            notes = "The user must either have an ADMIN role or be the owner of the employee record to access this endpoint. ")
     @GetMapping("/{id}/projects")
     @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<List<ProjectDTO>> getProjectsByEmployeeId(@PathVariable String id) {

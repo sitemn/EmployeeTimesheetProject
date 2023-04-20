@@ -57,7 +57,6 @@ public class ProjectService {
             Project project = projectOptional.get();
             project.setName(updatedProject.getName());
             project.setDescription(updatedProject.getDescription());
-            // Update other fields as needed
 
             return projectRepository.save(project);
         } else {

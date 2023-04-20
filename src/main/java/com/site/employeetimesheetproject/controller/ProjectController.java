@@ -3,6 +3,7 @@ package com.site.employeetimesheetproject.controller;
 import com.site.employeetimesheetproject.dto.ProjectDTO;
 import com.site.employeetimesheetproject.model.Project;
 import com.site.employeetimesheetproject.service.ProjectService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @ApiOperation(value = "This endpoint handles POST requests to create a new project.",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> createProject(@RequestBody Project project) {
@@ -36,8 +39,10 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTO, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "This endpoint handles PUT requests to update an existing project with the given id.",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> updateProject(@PathVariable String id, @RequestBody Project updatedProject) {
         try {
             Project updated = projectService.updateProject(id, updatedProject);
@@ -48,6 +53,8 @@ public class ProjectController {
         }
     }
 
+    @ApiOperation(value = "This endpoint handles DELETE requests to delete an existing project with the given id",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {
@@ -59,6 +66,8 @@ public class ProjectController {
         }
     }
 
+    @ApiOperation(value = "This endpoint handles GET requests to retrieve all projects.",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
@@ -69,8 +78,10 @@ public class ProjectController {
         return new ResponseEntity<>(projectDTOS, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "This endpoint handles GET requests to get an existing project with the given id.",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable String id) {
         return projectService.getProjectById(id)
                 .map(project -> {
@@ -80,6 +91,9 @@ public class ProjectController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @ApiOperation(value = "This endpoint handles POST requests to assign " +
+            "an employee with the given employeeId to a project with the given projectId. ",
+            notes = "The user must have an ADMIN role to access this endpoint. ")
     @PostMapping("/{projectId}/assign-employee/{employeeId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> assignEmployeeToProject(
