@@ -2,14 +2,6 @@ package com.site.employeetimesheetproject.payload;
 
 import java.util.List;
 
-/**
- * ClassName: JwtResponse
- * Package: com.site.employeetimesheetproject.model
- * Description:
- *
- * @Author: Site
- * @Version: v
- */
 public class JwtResponse {
     private String token;
     private String type = "Bearer";

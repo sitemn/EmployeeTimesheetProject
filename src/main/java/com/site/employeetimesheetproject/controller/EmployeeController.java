@@ -1,6 +1,5 @@
 package com.site.employeetimesheetproject.controller;
 
-import com.site.employeetimesheetproject.dto.EmployeeDTO;
 import com.site.employeetimesheetproject.dto.ProjectDTO;
 import com.site.employeetimesheetproject.model.Employee;
 import com.site.employeetimesheetproject.model.Project;
@@ -8,11 +7,11 @@ import com.site.employeetimesheetproject.payload.MessageResponse;
 import com.site.employeetimesheetproject.payload.SignupRequest;
 import com.site.employeetimesheetproject.repository.EmployeeRepository;
 import com.site.employeetimesheetproject.service.EmployeeService;
-import com.site.employeetimesheetproject.service.EmployeeUserDetailsService;
 import com.site.employeetimesheetproject.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,6 +40,7 @@ public class EmployeeController {
     private ProjectService projectService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createEmployee(@Valid @RequestBody SignupRequest signUpRequest) {
         if (employeeRepository.existsByEmployeeName(signUpRequest.getEmployeeName())) {
             return ResponseEntity
@@ -58,6 +58,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<Employee> updateEmployee(@PathVariable String id, @RequestBody Employee updatedEmployee) {
         try {
             Employee updated = employeeService.updateEmployee(id, updatedEmployee);
@@ -79,6 +80,7 @@ public class EmployeeController {
 //    }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEmployee(@PathVariable String id) {
         try {
             employeeService.deleteEmployee(id);
@@ -89,6 +91,7 @@ public class EmployeeController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
@@ -103,6 +106,7 @@ public class EmployeeController {
 //        return new ResponseEntity<>(employeeDTOs, HttpStatus.OK);
 //    }
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<Employee> getEmployeeById(@PathVariable String id) {
         return employeeService.getEmployeeById(id)
                 .map(employee -> new ResponseEntity<>(employee, HttpStatus.OK))
@@ -120,6 +124,7 @@ public class EmployeeController {
 //    }
 
     @GetMapping("/{id}/projects")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<List<ProjectDTO>> getProjectsByEmployeeId(@PathVariable String id) {
         List<Project> projects = employeeService.findProjectsByEmployeeId(id);
         List<ProjectDTO> projectDTOS = projects.stream()

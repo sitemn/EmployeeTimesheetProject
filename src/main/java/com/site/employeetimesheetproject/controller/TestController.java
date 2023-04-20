@@ -6,14 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * ClassName: TestController
- * Package: com.site.employeetimesheetproject.controller
- * Description:
- *
- * @Author: Site
- * @Version: v
- */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/test")
@@ -24,20 +16,16 @@ public class TestController {
     }
 
     @GetMapping("/employee")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('ADMIN')")
     public String userAccess() {
-        return "User Content.";
+        return "EMPLOYEE Content.";
     }
 
-    @GetMapping("/mod")
-    public String moderatorAccess() {
-        return "Moderator Board.";
-    }
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminAccess() {
-        return "Admin Board.";
+        return "Admin Content.";
     }
 }
 

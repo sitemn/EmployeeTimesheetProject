@@ -59,8 +59,7 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/auth/**").permitAll()
-                .antMatchers("/test/**").permitAll()
-                .antMatchers("/api/**").permitAll()
+                .antMatchers("/test/**").permitAll().antMatchers("/api/**").authenticated()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());
@@ -70,3 +69,5 @@ public class WebSecurityConfig {
         return http.build();
     }
 }
+
+

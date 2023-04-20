@@ -1,12 +1,12 @@
 package com.site.employeetimesheetproject.controller;
 
-import com.site.employeetimesheetproject.dto.ProjectDTO;
 import com.site.employeetimesheetproject.dto.TimesheetDTO;
 import com.site.employeetimesheetproject.model.Timesheet;
 import com.site.employeetimesheetproject.service.TimesheetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -46,12 +46,14 @@ public class TimesheetController {
     }
 
     @DeleteMapping("/{timesheetId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTimesheet(@PathVariable String timesheetId) {
         timesheetService.deleteTimesheet(timesheetId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TimesheetDTO>> getAllTimesheets() {
         List<Timesheet> timesheets = timesheetService.getAllTimesheets();
         List<TimesheetDTO> timesheetDTOS = timesheets.stream()
@@ -61,6 +63,7 @@ public class TimesheetController {
     }
 
     @GetMapping("/employee/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#employeeId)")
     public ResponseEntity<List<TimesheetDTO>> getTimesheetsByEmployeeId(@PathVariable String employeeId) {
         List<Timesheet> timesheets = timesheetService.getTimesheetsByEmployeeId(employeeId);
         List<TimesheetDTO> timesheetDTOS = timesheets.stream()
@@ -70,6 +73,7 @@ public class TimesheetController {
     }
 
     @GetMapping("/project/{projectId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TimesheetDTO>> getTimesheetsByProjectId(@PathVariable String projectId) {
         List<Timesheet> timesheets = timesheetService.getTimesheetsByProjectId(projectId);
         List<TimesheetDTO> timesheetDTOS = timesheets.stream()
@@ -79,6 +83,7 @@ public class TimesheetController {
     }
 
     @GetMapping("/employee/{employeeId}/date-range")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#employeeId)")
     public ResponseEntity<List<TimesheetDTO>> getTimesheetsByEmployeeIdAndDateRange(
             @PathVariable String employeeId,
             @RequestParam("startDate") String startDateString,
@@ -94,6 +99,7 @@ public class TimesheetController {
     }
 
     @GetMapping("/project/{projectId}/date-range")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TimesheetDTO>> getTimesheetsByProjectIdAndDateRange(
             @PathVariable String projectId,
             @RequestParam("startDate") String startDateString,
@@ -109,6 +115,7 @@ public class TimesheetController {
     }
 
     @GetMapping("/{timesheetId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Timesheet> getTimesheetById(@PathVariable String timesheetId) {
         Timesheet timesheet = timesheetService.findTimesheetById(timesheetId);
         return new ResponseEntity<>(timesheet, HttpStatus.OK);

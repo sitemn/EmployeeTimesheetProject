@@ -5,17 +5,8 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
-/**
- * ClassName: SignupRequest
- * Package: com.site.employeetimesheetproject.model
- * Description:
- *
- * @Author: Site
- * @Version: v
- */
 @Getter
 @Setter
 public class SignupRequest {

@@ -1,16 +1,15 @@
 package com.site.employeetimesheetproject.controller;
 
-import com.site.employeetimesheetproject.dto.EmployeeDTO;
 import com.site.employeetimesheetproject.dto.ProjectDTO;
 import com.site.employeetimesheetproject.model.Project;
 import com.site.employeetimesheetproject.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +29,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> createProject(@RequestBody Project project) {
         Project createdProject = projectService.createProject(project);
         ProjectDTO projectDTO = projectService.toProjectDTO(createdProject);
@@ -37,6 +37,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<ProjectDTO> updateProject(@PathVariable String id, @RequestBody Project updatedProject) {
         try {
             Project updated = projectService.updateProject(id, updatedProject);
@@ -48,6 +49,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProject(@PathVariable String id) {
         try {
             projectService.deleteProject(id);
@@ -58,6 +60,7 @@ public class ProjectController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         List<Project> projects = projectService.getAllProjects();
         List<ProjectDTO> projectDTOS = projects.stream()
@@ -67,6 +70,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or principal.id.equals(#id)")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable String id) {
         return projectService.getProjectById(id)
                 .map(project -> {
@@ -77,6 +81,7 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/assign-employee/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProjectDTO> assignEmployeeToProject(
             @PathVariable String projectId, @PathVariable String employeeId) {
         Project updatedProject = projectService.assignEmployeeToProject(projectId, employeeId);

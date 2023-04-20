@@ -1,16 +1,14 @@
 package com.site.employeetimesheetproject.controller;
 
 import com.site.employeetimesheetproject.jwt.JwtUtils;
-import com.site.employeetimesheetproject.model.ERole;
-import com.site.employeetimesheetproject.model.Role;
 import com.site.employeetimesheetproject.model.Employee;
 import com.site.employeetimesheetproject.model.EmployeeUserDetails;
 import com.site.employeetimesheetproject.payload.JwtResponse;
 import com.site.employeetimesheetproject.payload.LoginRequest;
 import com.site.employeetimesheetproject.payload.MessageResponse;
 import com.site.employeetimesheetproject.payload.SignupRequest;
-import com.site.employeetimesheetproject.repository.RoleRepository;
 import com.site.employeetimesheetproject.repository.EmployeeRepository;
+import com.site.employeetimesheetproject.repository.RoleRepository;
 import com.site.employeetimesheetproject.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,19 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * ClassName: AuthController
- * Package: com.site.employeetimesheetproject.controller
- * Description:
- *
- * @Author: Site
- * @Version: v
- */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
